@@ -62,6 +62,8 @@ INSTALLED_APPS = [
     'spotify',
 ]
 
+AUTH_USER_MODEL = 'users.User'
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 
