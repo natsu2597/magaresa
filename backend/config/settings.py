@@ -166,10 +166,17 @@ STATIC_URL = 'static/'
 
 MAILERS = {
     'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+        'BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
+        'OPTIONS' : {
+            "host" : 'smtp.gmail.com',
+            "port" : 587,
+            "username" : os.getenv("EMAIL_HOST_USER"),
+            "password" : os.getenv("EMAIL_HOST_PASSWORD"),
+            "use_tls" : True,
+        }
     },
 }
 
 #Password reset mail
 
-DEFAULT_BY_EMAIL = "noreply@magaresa.local"
+DEFAULT_FROM_EMAIL = os.getenv("EMAIL_HOST_USER")
