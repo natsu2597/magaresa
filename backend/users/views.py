@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import RegisterSerializer, UserSerializer, LoginSerializer
+from .serializers import RegisterSerializer, UserSerializer, LoginSerializer, UpdateProfileSerializer
 
 # Create your views here.
 
@@ -69,4 +69,23 @@ class ProfileView(APIView):
         return Response(
             serializer.data,
             status=status.HTTP_200_OK,
+        )
+
+    def patch(self,request):
+        serializer = UpdateProfileSerializer(
+            request.user,
+            data=request.data,
+            partial=True
+            )
+
+        serializer.is_valid(raise_exception=True)
+
+        user = serializer.save()
+
+        return Response(
+            {
+                "message" : "Profile updated successfully",
+                "user" : UserSerializer(user).data
+            },
+            status=status.HTTP_200_OK
         )

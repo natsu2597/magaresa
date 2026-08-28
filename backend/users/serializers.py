@@ -105,3 +105,15 @@ class LoginSerializer(serializers.Serializer):
        attrs["user"] = user
 
        return attrs
+
+
+class UpdateProfileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = [
+            "first_name",
+            "last_name",
+            "display_name",
+            "profile_image",
+        ]
