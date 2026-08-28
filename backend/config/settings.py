@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
 
     #Local
@@ -61,6 +62,8 @@ INSTALLED_APPS = [
     'playlists',
     'spotify',
 ]
+
+AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -78,6 +81,10 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
     ],
+
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ]
 }
 
 ROOT_URLCONF = 'config.urls'
@@ -98,6 +105,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
+
+
 
 
 # Database
@@ -157,6 +166,17 @@ STATIC_URL = 'static/'
 
 MAILERS = {
     'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+        'BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
+        'OPTIONS' : {
+            "host" : 'smtp.gmail.com',
+            "port" : 587,
+            "username" : os.getenv("EMAIL_HOST_USER"),
+            "password" : os.getenv("EMAIL_HOST_PASSWORD"),
+            "use_tls" : True,
+        }
     },
 }
+
+#Password reset mail
+
+DEFAULT_FROM_EMAIL = os.getenv("EMAIL_HOST_USER")
