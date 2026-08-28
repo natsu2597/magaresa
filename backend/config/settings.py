@@ -107,6 +107,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
+
+
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
@@ -167,3 +169,7 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+#Password reset mail
+
+DEFAULT_BY_EMAIL = "noreply@magaresa.local"
