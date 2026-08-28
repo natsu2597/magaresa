@@ -60,7 +60,7 @@ class RegisterSerializer(serializers.ModelSerializer):
                 "confirm_password" : "Passwords do not match"
             })
 
-        validate_password[attrs["password"]]
+        validate_password(attrs["password"])
 
         return attrs
     
