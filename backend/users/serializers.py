@@ -117,3 +117,44 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
             "display_name",
             "profile_image",
         ]
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(
+        write_only=True
+    )
+
+    new_password = serializers.CharField(
+        write_only=True
+    )
+
+    confirm_password = serializers.CharField(
+        write_only=True
+    )
+
+    def validate_current_password(self,value):
+        user = self.context["request"].user
+
+        if not user.check_password(value):
+            raise serializers.ValidationError(
+                "Current password is incorrect"
+            )
+
+        return value
+
+    def validate(self,attrs):
+        if attrs["new_password"] != attrs["confirm_password"]:
+            raise serializers.ValidationError({
+                "confirm_password" : "Passwords don't match"
+            })
+
+        validate_password(
+            attrs["new_password"],
+            self.context["request"].user
+        )
+
+        return attrs
+        
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()

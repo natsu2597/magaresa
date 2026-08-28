@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import RegisterSerializer, UserSerializer, LoginSerializer, UpdateProfileSerializer
+from .serializers import RegisterSerializer, UserSerializer, LoginSerializer, UpdateProfileSerializer, ChangePasswordSerializer, LogoutSerializer
 
 # Create your views here.
 
@@ -88,4 +88,60 @@ class ProfileView(APIView):
                 "user" : UserSerializer(user).data
             },
             status=status.HTTP_200_OK
+        )
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self,request):
+        serializer = ChangePasswordSerializer(
+            data=request.data,
+            context={
+                "request" : request
+            }
+        )
+
+        serializer.is_valid(
+            raise_exception=True
+        )
+
+        user = request.user
+
+        user.set_password(
+            serializer.validated_data["new_password"]
+        )
+
+        user.save()
+
+        return Response(
+            {
+                "message" : "Password changed successfully"
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = LogoutSerializer(
+            data=request.data
+        )
+
+        serializer.is_valid(
+            raise_exception=True
+        )
+
+        refresh_token = serializer.validated_data["refresh"]
+
+        token = RefreshToken(refresh_token)
+
+        token.blacklist()
+
+        return Response(
+            {
+                "message" : "Logout succesfully"
+            },
+            status=status.HTTP_200_OK,
         )
